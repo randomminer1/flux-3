@@ -5,7 +5,7 @@ from PIL.Image import Image
 import threading,time
 from pipelines.models import TextToImageRequest
 import torch
-from torchao.quantization import int4_weight_only,quantize_
+from torchao.quantization import fpx_weight_only,quantize_
 from torch import Generator
 from diffusers import FluxPipeline,FluxTransformer2DModel,AutoencoderKL
 from diffusers.image_processor import VaeImageProcessor
@@ -20,7 +20,7 @@ def c(d):
 def i(j):
  if j.get("k")==None:
   j["k"]=FluxTransformer2DModel.from_pretrained("/root/.cache/huggingface/hub/models--black-forest-labs--FLUX.1-schnell/snapshots/741f7c3ce8b383c54771c7003378a50191e9efe9/transformer",low_cpu_mem_usage=True,torch_dtype=torch.bfloat16)
-  quantize_(j["k"],int4_weight_only(),device="cuda")
+  quantize_(j["k"],fpx_weight_only(3, 2),device="cuda")
 def l(m):
  if m.get("n")==None:m["n"]=AutoencoderKL.from_pretrained(a,subfolder="vae",torch_dtype=torch.bfloat16).to("cuda")
  if m.get("o")==None and m.get("n") is not None:m["o"]=2**len(m["n"].config.block_out_channels)
