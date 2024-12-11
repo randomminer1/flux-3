@@ -5,7 +5,6 @@ from PIL.Image import Image
 import threading,time
 from pipelines.models import TextToImageRequest
 import torch
-from torchao.quantization import fpx_weight_only,quantize_
 from torch import Generator
 from diffusers import FluxPipeline,FluxTransformer2DModel,AutoencoderKL
 from diffusers.image_processor import VaeImageProcessor
@@ -19,8 +18,7 @@ def c(d):
  if d.get("h")==None:d["h"]=T5TokenizerFast.from_pretrained(a,subfolder="tokenizer_2")
 def i(j):
  if j.get("k")==None:
-  j["k"]=FluxTransformer2DModel.from_pretrained("/root/.cache/huggingface/hub/models--black-forest-labs--FLUX.1-schnell/snapshots/741f7c3ce8b383c54771c7003378a50191e9efe9/transformer",low_cpu_mem_usage=True,torch_dtype=torch.bfloat16)
-  quantize_(j["k"],fpx_weight_only(2,2),device="cuda")
+  j["k"]=FluxTransformer2DModel.from_pretrained("/root/.cache/huggingface/hub/models--barneystinson--FLUX.1-schnell-int8wo/snapshots/b9fa75333f9319a48b411a2618f6f353966be599",low_cpu_mem_usage=True,torch_dtype=torch.bfloat16, use_safetensors=False)
 def l(m):
  if m.get("n")==None:m["n"]=AutoencoderKL.from_pretrained(a,subfolder="vae",torch_dtype=torch.bfloat16).to("cuda")
  if m.get("o")==None and m.get("n") is not None:m["o"]=2**len(m["n"].config.block_out_channels)
@@ -32,7 +30,7 @@ def s(t,u):
  u["e"]=None;u["f"]=None;u["g"]=None;u["h"]=None
  return w,x,y
 def z(aa,ab,ac,ad,ae,af):
- ag=FluxPipeline.from_pretrained(a,transformer=af["k"],text_encoder=None,text_encoder_2=None,tokenizer=None,tokenizer_2=None,vae=None)
+ ag=FluxPipeline.from_pretrained(a,transformer=af["k"],text_encoder=None,text_encoder_2=None,tokenizer=None,tokenizer_2=None,vae=None).to("cuda")
  ah=Generator(ag.device).manual_seed(ae) if ae is not None else None
  ai=ag(prompt_embeds=aa,pooled_prompt_embeds=ab,num_inference_steps=4,guidance_scale=0.0,width=ac,height=ad,generator=ah,output_type="latent").images
  af["k"]=None
