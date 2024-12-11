@@ -18,7 +18,7 @@ def c(d):
  if d.get("h")==None:d["h"]=T5TokenizerFast.from_pretrained(a,subfolder="tokenizer_2")
 def i(j):
  if j.get("k")==None:
-  j["k"]=FluxTransformer2DModel.from_pretrained("/root/.cache/huggingface/hub/models--barneystinson--FLUX.1-schnell-int8wo/snapshots/b9fa75333f9319a48b411a2618f6f353966be599",low_cpu_mem_usage=True,torch_dtype=torch.bfloat16, use_safetensors=False)
+  j["k"]=FluxTransformer2DModel.from_pretrained("/home/sandbox/.cache/huggingface/hub/models--barneystinson--FLUX.1-schnell-int8wo/snapshots/b9fa75333f9319a48b411a2618f6f353966be599",low_cpu_mem_usage=True,torch_dtype=torch.bfloat16, use_safetensors=False)
 def l(m):
  if m.get("n")==None:m["n"]=AutoencoderKL.from_pretrained(a,subfolder="vae",torch_dtype=torch.bfloat16).to("cuda")
  if m.get("o")==None and m.get("n") is not None:m["o"]=2**len(m["n"].config.block_out_channels)
