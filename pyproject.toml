@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [tool.edge-maxxing]
-models = ["black-forest-labs/FLUX.1-schnell"]
+models = ["black-forest-labs/FLUX.1-schnell", "barneystinson/FLUX.1-schnell-int8wo"]
 
 [project.scripts]
 start_inference = "main:main"
