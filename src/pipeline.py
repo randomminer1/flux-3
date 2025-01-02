@@ -25,10 +25,6 @@ def load_pipeline() -> Pipeline:
         torch_dtype=torch.bfloat16,
     )
 
-    text_encoder = torch.compile(
-        text_encoder, options={"triton.cudagraphs": False}, fullgraph=False
-    )
-
     text_encoder_2 = T5EncoderModel.from_pretrained(
         CHECKPOINT,
         revision=REVISION,
@@ -37,8 +33,12 @@ def load_pipeline() -> Pipeline:
         torch_dtype=torch.bfloat16,
     )
 
-    text_encoder_2 = torch.compile(
-        text_encoder_2, options={"triton.cudagraphs": False}, fullgraph=False
+    vae = AutoencoderKL.from_pretrained(
+        CHECKPOINT,
+        revision=REVISION,
+        subfolder="vae",
+        local_files_only=True,
+        torch_dtype=torch.bfloat16,
     )
 
     path = os.path.join(HF_HUB_CACHE, "models--RobertML--FLUX.1-schnell-int8wo/snapshots/307e0777d92df966a3c0f99f31a6ee8957a9857a")
@@ -48,25 +48,6 @@ def load_pipeline() -> Pipeline:
         torch_dtype=torch.bfloat16,
         use_safetensors=False,
     )
-
-    transformer = torch.compile(
-        transformer, options={"triton.cudagraphs": True}, fullgraph=True
-    )
-    transformer.to(device="cuda", memory_format=torch.channels_last)
-
-
-    vae = AutoencoderKL.from_pretrained(
-        CHECKPOINT,
-        revision=REVISION,
-        subfolder="vae",
-        local_files_only=True,
-        torch_dtype=torch.bfloat16,
-    )
-    vae.decoder = torch.compile(
-        vae.decoder, options={"triton.cudagraphs": True}, fullgraph=True
-    )
-    vae.to(device="cuda", memory_format=torch.channels_last)
-
 
     pipeline = FluxPipeline.from_pretrained(
         CHECKPOINT,
@@ -79,18 +60,7 @@ def load_pipeline() -> Pipeline:
         torch_dtype=torch.bfloat16,
     ).to("cuda")
 
-    generator = Generator(pipeline.device).manual_seed(42)
-    
-    for _ in range(3):
-        pipeline(
-            "photo of a dog", 
-            generator=generator,
-            num_inference_steps=4,
-            max_sequence_length=256,
-            guidance_scale=0.0,
-            height=1024,
-            width=1024,
-        )
+    pipeline("")
 
     return pipeline
 
