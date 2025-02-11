@@ -11,6 +11,7 @@ dependencies = [
   "diffusers==0.31.0",
   "transformers==4.46.2",
   "accelerate==1.1.0",
+  "para-attn==0.3.15",
   "omegaconf==2.3.0",
   "torch==2.5.1",
   "protobuf==5.28.3",
